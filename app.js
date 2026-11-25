@@ -748,7 +748,8 @@
     if (mode) html += '<div class="row"><span class="row-label">Mode</span><div class="seg" aria-hidden="true">' +
       '<span class="' + (mode !== "LIVE" ? "on" : "") + '">PAPER</span>' +
       '<span class="' + (mode === "LIVE" ? "on" : "") + '">LIVE</span></div></div>';
-    html += '<p class="hint">LIVE stays locked until step 15 passes. Type LIVE in Grok Bot chat to switch. Change in Grok Bot chat.</p>';
+    const warn = acct.live_warning || "LIVE trades real cash on FOMO. New coins can go to 0 in minutes. Only put in what you can lose.";
+    html += '<p class="hint">' + escapeHtml(warn) + " LIVE stays locked until one full paper night is recorded, step 15 passes, and you type LIVE in Grok Bot chat. Change in Grok Bot chat.</p>";
     html += '<div class="row"><span class="row-label">Cash</span><span class="row-value num">' + escapeHtml(money(cash) || "—") + "</span></div>";
     if (profile) html += '<a class="row" href="' + escapeHtml(profile) + '" rel="noopener noreferrer"><span class="row-label">Your FOMO profile</span><span class="row-value">' + escapeHtml(handle ? "@" + handle.replace(/^@/, "") : "Open") + " ›</span></a>";
     html += '<button class="row" type="button" id="btn-invite"><span class="row-label">Invite a friend</span><span class="row-value">Share ›</span></button>';
