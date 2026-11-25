@@ -1,0 +1,11 @@
+:root { color-scheme: dark; }
+html, body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #111;
+  color: #eee;
+}
+main { max-width: 36rem; margin: 2rem auto; padding: 0 1rem; }
+#timestamp { font-variant-numeric: tabular-nums; }
+.ok { color: #8fd18f; }
+.err { color: #f0a0a0; }
