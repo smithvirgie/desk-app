@@ -2,20 +2,65 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Desk">
   <title>Desk</title>
   <link rel="stylesheet" href="app.css">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 </head>
 <body>
-  <main>
-    <h1>Desk</h1>
-    <p id="status">Open this page with your private data link to load the latest state.</p>
-    <p id="timestamp"></p>
-  </main>
+  <div id="app">
+    <div id="error-bar" class="error-bar hidden" role="status"></div>
+
+    <header class="navbar">
+      <button class="nav-avatar" id="btn-avatar" aria-label="Account" type="button"></button>
+      <div class="nav-title">
+        <span class="nav-brand">Grok Bot</span>
+        <span class="nav-chevron" aria-hidden="true">›</span>
+        <button class="nav-coin hidden" id="nav-coin" type="button"></button>
+      </div>
+      <button class="nav-bell" id="btn-bell" aria-label="Activity" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 9a6 6 0 1 1 12 0c0 4 1.5 5.5 2 6.5H4C4.5 14.5 6 13 6 9Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M10 19a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span class="bell-dot hidden" id="bell-dot"></span>
+      </button>
+    </header>
+
+    <main id="main" class="main"></main>
+
+    <nav class="tabbar" aria-label="Main">
+      <button class="tab on" data-tab="home" type="button">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M4 11.5 12 4l8 7.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-8.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="tab" data-tab="bots" type="button">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span>Bots</span>
+      </button>
+      <button class="tab" data-tab="activity" type="button">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M8 7h12M8 12h12M8 17h12M4 7h.01M4 12h.01M4 17h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>Activity</span>
+      </button>
+      <button class="tab" data-tab="account" type="button">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M5 19.2c.8-3.2 3.2-5 7-5s6.2 1.8 7 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <span>Account</span>
+      </button>
+    </nav>
+  </div>
+
+  <div id="sheet" class="sheet hidden" hidden></div>
+  <div id="lightbox" class="lightbox hidden" hidden></div>
+
+  <script src="chart.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
