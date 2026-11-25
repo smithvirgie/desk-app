@@ -346,7 +346,12 @@ img { max-width: 100%; display: block; }
 .setting:last-child { border-bottom: 0; }
 .setting .lab { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px; }
 .setting .lab b { font-weight: 500; }
-.setting .lab span { font-family: var(--font-mono); color: var(--secondary); font-size: 12px; }
+.setting .lab span, .setting .exact { font-family: var(--font-mono); color: var(--secondary); font-size: 12px; }
+.setting .exact {
+  width: 5.8em; text-align: right; background: transparent;
+  border: 0; padding: 0; -moz-appearance: textfield;
+}
+.setting .exact::-webkit-outer-spin-button, .setting .exact::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .setting input[type="range"] {
   width: 100%; accent-color: var(--blue); opacity: 0.85;
 }

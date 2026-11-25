@@ -17,14 +17,17 @@
   const RANGES = ["LIVE", "1H", "4H", "1D", "1W", "ALL"];
   const SETTING_GROUPS = [
     { title: "Scanner", keys: ["min_liquidity_usd", "max_top10_pct", "max_h1_change_pct", "scanner_poll_s", "min_pool_age_min", "max_wait_min", "runner_h24_pct", "min_holders_growth_pct"] },
-    { title: "Analyst", keys: ["max_dev_pct", "min_lp_locked_pct", "max_bundled", "max_insiders_pct", "max_delegated_accounts", "retries", "min_score", "alive_volume_h1", "fast_curve_min", "max_fresh_pct", "organic_unique_h1", "organic_buys_h1", "bundled_penalty", "flush_sell_ratio", "chase_h1_pct", "social_weight", "social_max_per_h", "social_timeout_s", "shill_cut"] },
-    { title: "Market mode", keys: ["red_btc_h1_pct", "red_sol_h1_pct", "red_h4_pct", "red_tp_x", "red_trail_pct", "quiet_grads_h", "quiet_max_positions", "green_after_min", "regime_poll_min", "narratives", "narrative_every_h", "news_exit_min"] },
+    { title: "Analyst", keys: ["max_dev_pct", "min_lp_locked_pct", "max_bundled", "max_insiders_pct", "max_delegated_accounts", "retries", "min_score", "alive_volume_h1", "fast_curve_min", "max_fresh_pct", "organic_unique_h1", "organic_buys_h1", "bundled_penalty", "flush_sell_ratio", "chase_h1_pct"] },
+    { title: "Social", keys: ["social_weight", "social_max_per_h", "social_timeout_s", "shill_cut"] },
+    { title: "Market mode", keys: ["red_btc_h1_pct", "red_sol_h1_pct", "red_h4_pct", "red_tp_x", "red_trail_pct", "quiet_grads_h", "quiet_max_positions", "green_after_min", "regime_poll_min"] },
+    { title: "Narratives", keys: ["narratives", "narrative_every_h", "news_exit_min"] },
     { title: "Vault and lessons", keys: ["vault_live_note_s", "lesson_archive_nights", "lesson_propose_hits", "cold_wallet_losses", "missed_check_h"] },
-    { title: "Copy picks", keys: ["picks_every", "picks_time", "picks_top", "picks_shortlist", "picks_min_trades", "picks_last_trade_h", "picks_one_coin_poll", "max_on_copy", "copy_coin_s", "copy_delay_s", "copy_size_pct", "copy_stop_pct"] },
+    { title: "Copy picks", keys: ["picks_every", "picks_time", "picks_top", "picks_shortlist", "picks_min_trades", "picks_last_trade_h", "picks_one_coin_poll", "max_on_copy", "copy_poll_s", "copy_delay_s", "copy_size_pct", "copy_stop_pct"] },
+    { title: "Repos", keys: ["timesfm_every_min", "debate_timeout_s", "tools_timeout_s"] },
     { title: "Brain", keys: ["risk_per_trade_pct", "full_size_score", "below_full_pct", "max_pool_pct", "min_ticket_usd", "max_ticket_usd", "max_trades_night"] },
     { title: "Executor", keys: ["dip_pct", "dip_window_min", "dip_wait_min", "crash_pct", "tp_x", "tp_sell_pct", "trail_pct", "recheck_liq_drop_pct", "recheck_price_up_pct", "quote_timeout_s", "verify_timeout_s"] },
     { title: "Risk", keys: ["risk_poll_s", "stop_pct", "timeout_h", "timeout_min_gain_pct", "night_loss_stop_pct"] },
-    { title: "Desk", keys: ["paper_start_cash", "night_start", "lock_time", "report_time", "notifier"] },
+    { title: "Desk", keys: ["paper_start_cash", "night_start", "lock_time", "report_time", "notifier", "fomo_handle", "withdraw_address", "rpc_url", "push_rejects", "fee_pct"] },
   ];
   const SETTING_RANGE = {
     min_liquidity_usd: [1000, 200000], max_top10_pct: [1, 80], max_h1_change_pct: [10, 1000],
@@ -43,7 +46,7 @@
     vault_live_note_s: [1, 120], lesson_archive_nights: [1, 30], lesson_propose_hits: [1, 20],
     cold_wallet_losses: [1, 20], missed_check_h: [1, 48], picks_top: [1, 20],
     picks_shortlist: [5, 200], picks_min_trades: [1, 200], picks_last_trade_h: [1, 168],
-    picks_one_coin_poll: [10, 600], max_on_copy: [0, 10], copy_coin_s: [1, 120],
+    picks_one_coin_poll: [10, 600], max_on_copy: [0, 10], copy_poll_s: [1, 120],
     copy_delay_s: [0, 300], copy_size_pct: [1, 100], copy_stop_pct: [1, 90],
     risk_per_trade_pct: [0.1, 20], full_size_score: [50, 100], below_full_pct: [1, 100],
     max_pool_pct: [0.1, 20], min_ticket_usd: [1, 100], max_ticket_usd: [2, 10000],
@@ -52,7 +55,8 @@
     trail_pct: [1, 90], recheck_liq_drop_pct: [1, 80], recheck_price_up_pct: [1, 80],
     quote_timeout_s: [1, 60], verify_timeout_s: [5, 120], risk_poll_s: [1, 60],
     stop_pct: [1, 90], timeout_h: [1, 24], timeout_min_gain_pct: [0, 50],
-    night_loss_stop_pct: [1, 90], paper_start_cash: [10, 100000],
+    night_loss_stop_pct: [1, 90], paper_start_cash: [10, 100000], fee_pct: [0, 5],
+    timesfm_every_min: [1, 1440], debate_timeout_s: [1, 600], tools_timeout_s: [1, 600],
   };
 
   const $ = (sel, root) => (root || document).querySelector(sel);
@@ -768,24 +772,38 @@
     html += '<div class="group"><button class="row" type="button" id="btn-watch"><span class="row-label">Watch in Grok Bot</span><span class="row-value">Chat ›</span></button>' +
       '<p class="hint">There is no public preview URL under this hosting. Ask in Grok Bot chat to see the computer.</p></div>';
 
-    SETTING_GROUPS.forEach((g) => {
+    const groups = (store.settings && store.settings.groups) || (acct.groups) || SETTING_GROUPS;
+    const ranges = (store.settings && store.settings.ranges) || (acct.ranges) || SETTING_RANGE;
+    groups.forEach((g) => {
       html += '<div class="group"><h3>' + escapeHtml(g.title) + "</h3>";
       g.keys.forEach((key) => {
-        if (!(key in settings) && settings[key] !== 0) {
-          // still show if we have a default-looking value missing? skip unknown to avoid made-up numbers
-          if (settings[key] == null) return;
-        }
+        if (!Object.prototype.hasOwnProperty.call(settings, key)) return;
         const val = settings[key];
         if (typeof val === "number") {
-          const range = SETTING_RANGE[key] || [0, val * 2 || 100];
-          html += '<div class="setting"><div class="lab"><b>' + escapeHtml(key) + "</b><span>" + escapeHtml(String(val)) + "</span></div>" +
-            '<input type="range" min="' + range[0] + '" max="' + range[1] + '" step="any" value="' + escapeHtml(String(val)) + '" disabled></div>';
+          const rawRange = ranges[key] || SETTING_RANGE[key];
+          const range = rawRange ? [rawRange[0], rawRange[1]] : [0, val * 2 || 100];
+          const step = Number.isInteger(val) && Number.isInteger(range[0]) && Number.isInteger(range[1]) ? "1" : "0.01";
+          html += '<div class="setting"><div class="lab"><b>' + escapeHtml(key) + "</b>" +
+            '<input class="exact" type="number" min="' + range[0] + '" max="' + range[1] + '" step="' + step + '" value="' + escapeHtml(String(val)) + '" disabled readonly></div>' +
+            '<input type="range" min="' + range[0] + '" max="' + range[1] + '" step="' + step + '" value="' + escapeHtml(String(val)) + '" disabled></div>';
+        } else if (typeof val === "boolean") {
+          html += '<div class="row"><span class="row-label">' + escapeHtml(key) + '</span><span class="row-value">' + (val ? "true" : "false") + "</span></div>";
         } else {
-          html += '<div class="row"><span class="row-label">' + escapeHtml(key) + '</span><span class="row-value">' + escapeHtml(String(val)) + "</span></div>";
+          const show = (val == null || val === "") ? "not set" : String(val);
+          html += '<div class="row"><span class="row-label">' + escapeHtml(key) + '</span><span class="row-value">' + escapeHtml(show) + "</span></div>";
         }
       });
       html += '<p class="hint">Change in Grok Bot chat</p></div>';
     });
+    const log = (store.settings && store.settings.change_log) || acct.change_log || [];
+    if (log.length) {
+      html += '<div class="group"><h3>Recent changes</h3>';
+      log.slice(0, 20).forEach((row) => {
+        html += '<div class="row"><span class="row-label">' + escapeHtml((row.key || "") + (row.who ? " · " + row.who : "")) +
+          '</span><span class="row-value">' + escapeHtml(String(row.old == null ? "" : row.old) + " → " + String(row.new == null ? "" : row.new)) + "</span></div>";
+      });
+      html += "</div>";
+    }
     html += "</div>";
     main.innerHTML = html;
 

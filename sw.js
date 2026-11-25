@@ -1,5 +1,5 @@
 /* Cache only same-origin static files. Never cache gist or other data fetches. */
-const CACHE = "desk-static-v10";
+const CACHE = "desk-static-v11";
 const STATIC = [
   "./",
   "./index.html",
