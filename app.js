@@ -766,9 +766,10 @@
       '<div class="row"><span class="row-label">Time</span><span class="row-value">' + escapeHtml(String(settings.picks_time || "—")) + "</span></div>" +
       '<p class="hint">Change in Grok Bot chat</p></div>';
 
+    const vaultLabel = (acct.vault && acct.vault.label) || "Vault: files not on iPhone";
     html += '<div class="group"><h3>Vault</h3>' +
-      '<div class="row"><span class="row-label">Plugin</span><span class="row-value">Not connected</span></div>' +
-      '<div class="row"><span class="row-label">Files</span><span class="row-value">On the desk computer</span></div></div>';
+      '<div class="row"><span class="row-label">Vault</span><span class="row-value">' + escapeHtml(vaultLabel) + "</span></div>" +
+      '<p class="hint">Notes live on the desk computer. They are not on this phone.</p></div>';
 
     html += '<div class="group"><button class="row" type="button" id="btn-watch"><span class="row-label">Watch in Grok Bot</span><span class="row-value">Chat ›</span></button>' +
       '<p class="hint">There is no public preview URL under this hosting. Ask in Grok Bot chat to see the computer.</p></div>';
